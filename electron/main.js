@@ -121,10 +121,21 @@ function injectDesktopBridge(view = contentView) {
     active: true,
     connectorRunning: !!st.running,
     message: st.message || '',
+    products: ['plotex', 'copilot'],
   })
+  // Merge with preload API if present
   view.webContents
     .executeJavaScript(
-      `window.__BANTUITY_DESKTOP__ = ${payload}; window.dispatchEvent(new Event('bantuity-desktop')); true`
+      `(function(){
+        var p = ${payload};
+        window.__BANTUITY_DESKTOP__ = Object.assign({}, window.__BANTUITY_DESKTOP__ || {}, p, window.bantuityDesktop || {});
+        if (window.bantuityDesktop) {
+          window.__BANTUITY_DESKTOP__.openProduct = window.bantuityDesktop.openProduct.bind(window.bantuityDesktop);
+          window.__BANTUITY_DESKTOP__.openProductPath = window.bantuityDesktop.openProductPath.bind(window.bantuityDesktop);
+        }
+        window.dispatchEvent(new Event('bantuity-desktop'));
+        return true;
+      })()`
     )
     .catch(() => {})
 }
@@ -175,6 +186,7 @@ function layoutViewsNow() {
 function createContentView() {
   contentView = new BrowserView({
     webPreferences: {
+      preload: path.join(__dirname, 'preload-content.js'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
@@ -183,19 +195,62 @@ function createContentView() {
   mainWindow.setBrowserView(contentView)
   layoutViews()
   contentView.webContents.setWindowOpenHandler(({ url }) => {
-    const localOrigins = [localServers.plotex?.origin, localServers.copilot?.origin].filter(
-      Boolean
-    )
-    if (localOrigins.some((o) => url.startsWith(o))) {
-      contentView.webContents.loadURL(url)
-      return { action: 'deny' }
-    }
-    if (
-      url.startsWith('https://plotex.bantuity.com') ||
-      url.startsWith('https://copilot.bantuity.com')
-    ) {
-      contentView.webContents.loadURL(url)
-      return { action: 'deny' }
+    // Keep Plotex / Copilot navigations inside the desktop shell
+    try {
+      const u = new URL(url)
+      const plotexOrigin = localServers.plotex?.origin
+      const copilotOrigin = localServers.copilot?.origin
+      if (plotexOrigin && url.startsWith(plotexOrigin)) {
+        currentProduct = 'plotex'
+        trackTab('plotex')
+        contentView.webContents.loadURL(url)
+        mainWindow?.webContents.send('product:changed', 'plotex')
+        return { action: 'deny' }
+      }
+      if (copilotOrigin && url.startsWith(copilotOrigin)) {
+        currentProduct = 'copilot'
+        trackTab('copilot')
+        contentView.webContents.loadURL(url)
+        mainWindow?.webContents.send('product:changed', 'copilot')
+        return { action: 'deny' }
+      }
+      if (
+        u.hostname.includes('plotex') ||
+        url.startsWith('https://plotex.bantuity.com')
+      ) {
+        // Rewrite cloud Plotex → local offline Plotex when available
+        if (plotexOrigin) {
+          const local = plotexOrigin + (u.pathname || '/workspace/') + (u.search || '')
+          currentProduct = 'plotex'
+          trackTab('plotex')
+          contentView.webContents.loadURL(local)
+          mainWindow?.webContents.send('product:changed', 'plotex')
+          return { action: 'deny' }
+        }
+        currentProduct = 'plotex'
+        contentView.webContents.loadURL(url)
+        mainWindow?.webContents.send('product:changed', 'plotex')
+        return { action: 'deny' }
+      }
+      if (
+        u.hostname.includes('copilot') ||
+        url.startsWith('https://copilot.bantuity.com')
+      ) {
+        if (copilotOrigin) {
+          const local = copilotOrigin + (u.pathname || '/workspace/') + (u.search || '')
+          currentProduct = 'copilot'
+          trackTab('copilot')
+          contentView.webContents.loadURL(local)
+          mainWindow?.webContents.send('product:changed', 'copilot')
+          return { action: 'deny' }
+        }
+        currentProduct = 'copilot'
+        contentView.webContents.loadURL(url)
+        mainWindow?.webContents.send('product:changed', 'copilot')
+        return { action: 'deny' }
+      }
+    } catch {
+      /* fall through */
     }
     shell.openExternal(url)
     return { action: 'deny' }
@@ -203,11 +258,6 @@ function createContentView() {
   contentView.webContents.on('did-finish-load', () => injectDesktopBridge())
   setInterval(() => {
     injectDesktopBridge()
-    for (const win of detachedWindows.values()) {
-      if (!win.isDestroyed() && win.webContents) {
-        // detached windows load product URL directly as BrowserWindow
-      }
-    }
   }, 2500)
 }
 
@@ -544,6 +594,33 @@ ipcMain.handle('product:open', (_e, productId, subpath) => {
   }
   loadProduct(productId, { workspace: true })
   return true
+})
+
+/** Open product at an exact path+query (handoffs, deep links). */
+ipcMain.handle('product:openPath', (_e, productId, pathAndQuery) => {
+  const id = productId === 'plotex' || productId === 'copilot' ? productId : 'plotex'
+  let rel = String(pathAndQuery || '/workspace/').trim()
+  if (!rel.startsWith('/')) rel = '/' + rel
+  // Prefer offline static server
+  const base = productBase(id).replace(/\/$/, '')
+  let url = base + rel
+  // Ensure trailing slash for static export folder routes when no query
+  if (!rel.includes('?') && !rel.endsWith('/') && !path.extname(rel.split('?')[0])) {
+    url = base + rel + '/'
+  }
+  // Fix workspace + query: /workspace?x → /workspace/?x for Next static export
+  url = url.replace(/\/workspace\?/, '/workspace/?')
+  currentProduct = id
+  settings.lastProduct = id
+  trackTab(id)
+  saveSettings(settings)
+  if (contentView) contentView.webContents.loadURL(url)
+  mainWindow?.webContents.send('product:changed', id)
+  const mode = localServers[id] ? 'offline' : 'online'
+  mainWindow?.setTitle(
+    `Bantuity — ${settings.products[id]?.name || id} · ${mode}`
+  )
+  return { ok: true, url }
 })
 
 ipcMain.handle('window:detach', (_e, productId) => {
