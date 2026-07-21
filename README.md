@@ -1,63 +1,62 @@
 # Bantuity Desktop
 
-One Windows desktop app for **Plotex** and **Copilot** — no browser required for day-to-day use.
+One Windows app for **Plotex** and **Copilot** — no browser required for the UI.
 
-- Switch products from the left sidebar  
-- Workspaces open in a native window  
-- Optional **local Stata connector** start/stop from the same app  
-- APIs stay in the cloud; Stata stays on your PC  
+## Download (public)
 
-## Requirements
+**Installer:**  
+https://github.com/Pakang619/bantuity-desktop/releases/latest/download/Bantuity-Setup-1.0.0.exe
 
-- Windows 10/11  
-- For live Stata runs: licensed Stata 17+ and the Bantuity Stata connector (download once from Plotex or Copilot)  
+**Release page:**  
+https://github.com/Pakang619/bantuity-desktop/releases/latest
+
+Double-click the EXE (~71 MB). Windows SmartScreen may warn on unsigned builds → **More info → Run anyway**.
+
+## What you get
+
+| Piece | Offline? | Notes |
+|--------|----------|--------|
+| Plotex UI | Yes | Bundled static Next.js export |
+| Copilot UI | Yes | Bundled static Next.js export |
+| Cloud APIs | No | Still calls Plotex / Copilot backends |
+| Local Stata | Local only | Use **Start connector** after installing the Stata connector once |
 
 ## Develop
 
 ```powershell
 cd C:\Users\Deriv\Desktop\bantuity-desktop
 npm install
+# Bundle latest web UIs into apps/
+npm run bundle:web
 npm start
 ```
 
-## Build installer (NSIS)
+## Build installer
 
 ```powershell
-cd C:\Users\Deriv\Desktop\bantuity-desktop
-npm install
-npm run dist
-```
-
-Output: `dist\Bantuity Setup 1.0.0.exe` (one-click install, Desktop + Start Menu shortcuts).
-
-Portable build:
-
-```powershell
+# Full: rebuild web + portable EXE
 npm run dist:portable
+
+# Or after bundle:web already ran:
+$env:CSC_IDENTITY_AUTO_DISCOVERY = "false"
+npx electron-builder --win portable --config.win.signAndEditExecutable=false
 ```
 
-## Settings
+Output: `dist\Bantuity-Setup-1.0.0.exe`
 
-Stored under `%APPDATA%\bantuity-desktop\settings.json`.
+Publish a new GitHub release:
 
-You can override product URLs (e.g. local dev):
-
-```json
-{
-  "products": {
-    "plotex": { "url": "http://127.0.0.1:3100", "workspaceUrl": "http://127.0.0.1:3100/workspace" },
-    "copilot": { "url": "http://127.0.0.1:3000", "workspaceUrl": "http://127.0.0.1:3000/workspace" }
-  }
-}
+```powershell
+gh release create v1.0.1 dist/Bantuity-Setup-1.0.0.exe --title "Bantuity Desktop 1.0.1" --notes "..."
 ```
 
 ## Architecture
 
-| Layer | Where |
-|--------|--------|
-| UI shell | Electron (this repo) |
-| Plotex / Copilot pages | Existing web apps (production or local) |
-| APIs | Render / local FastAPI |
-| Stata | Local connector process managed by the shell |
+```
+Electron shell (sidebar)
+  ├─ local static server :39201 → apps/plotex
+  ├─ local static server :39202 → apps/copilot
+  └─ connector manager → %LOCALAPPDATA%\Bantuity\*Connector
+```
 
-The shell does **not** reimplement Plotex or Copilot — it hosts them as first-class desktop surfaces so non-technical users never open Chrome or a terminal.
+Settings: `%APPDATA%\bantuity-desktop\settings.json`

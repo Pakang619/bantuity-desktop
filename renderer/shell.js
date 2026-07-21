@@ -74,13 +74,23 @@ document.getElementById('btn-conn-stop').addEventListener('click', async () => {
 })
 
 document.getElementById('btn-download').addEventListener('click', async () => {
-  // Prefer Plotex landing download section; Copilot workspace also has download
+  // Stata connector ZIP still comes from the product web API / workspace
   const url =
     current === 'copilot'
       ? 'https://copilot.bantuity.com/workspace'
       : 'https://plotex.bantuity.com/#download'
   await bantuity.openExternal(url)
 })
+
+// Optional: expose desktop app update page
+const desktopLink = document.getElementById('btn-desktop-update')
+if (desktopLink) {
+  desktopLink.addEventListener('click', async () => {
+    await bantuity.openExternal(
+      'https://github.com/Pakang619/bantuity-desktop/releases/latest'
+    )
+  })
+}
 
 if (window.bantuity?.onProductChanged) {
   bantuity.onProductChanged((id) => {
