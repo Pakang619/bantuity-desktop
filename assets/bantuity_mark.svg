@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="140" height="140">
+            <style>
+              @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@800&amp;display=swap');
+              .bg-box { fill: #131200; }
+              .mark-b { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 78px; fill: #FBFFFE; letter-spacing: -0.05em;}
+              .mark-sq { fill: #F26157; }
+            </style>
+            <rect width="120" height="120" class="bg-box"/>
+            <text x="20" y="88" class="mark-b">B</text>
+            <rect x="76" y="70" width="20" height="20" class="mark-sq"/>
+          </svg>

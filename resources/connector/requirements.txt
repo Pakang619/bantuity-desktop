@@ -1,0 +1,4 @@
+httpx>=0.27.0
+websockets>=12.0
+python-dotenv>=1.0.0
+# pystata is provided by Stata installation — not always on PyPI

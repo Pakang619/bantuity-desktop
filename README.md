@@ -1,57 +1,53 @@
-# Bantuity Desktop
+# Bantuity Studio Light
 
-Windows application for **Copilot** (AI-assisted Stata analysis) and **Plotex** (publication figures). Stata runs on the user’s machine under their license.
+**Bantuity Studio Light** (also known as **Studio Light**) — **Beta**
 
-## Download
+Windows desktop application for **Copilot** (AI-assisted Stata analysis) and **Plotex** (publication figures). Stata runs on the user’s machine under their license.
 
-**Installer:**  
+## Download (Beta)
+
 https://github.com/Pakang619/bantuity-desktop/releases/latest/download/Bantuity-Setup.exe
 
-**Releases:**  
-https://github.com/Pakang619/bantuity-desktop/releases/latest
+Installer product name: **Bantuity Studio Light**. Start menu / desktop shortcut: **Bantuity Studio Light**.
 
-## Requirements
+## What’s inside
 
-| Requirement | Detail |
-|-------------|--------|
-| Operating system | Windows 10 or 11, 64-bit |
-| Stata | Licensed Stata 17 or later installed on the same computer |
-| Network | Internet for AI generation, interpretation, and figure services |
-| Optional | Python 3.10+ if the environment is not already available (the app can set up a local service environment) |
-
-**Yes — the app is intended to run on any Windows PC that has a valid Stata license.** Analysis does not require a cloud Stata license; execution uses the user’s local Stata installation.
-
-## Features
-
-- **Copilot** — natural language to do-files, local Stata runs, dashboard results and figures  
+- **Copilot** — natural-language analysis, local do-file runs, results dashboard  
 - **Plotex** — journal themes, designer, and figure provenance  
-- **Local Stata service** — jobs stay on the PC under the user’s license  
-- **MCP** (optional) — IDE tools can use the same projects and Stata service  
+- **Local Stata service** — shared by Copilot, Plotex, and optional MCP tools  
 
 ## Develop
 
-```powershell
-cd bantuity-desktop
+```bash
 npm install
-npm run bundle:web
 npm start
 ```
 
-## Build installer
+### Package installer
 
-```powershell
+```bash
 npm run dist
 ```
 
-Output: `dist/Bantuity-Setup-<version>.exe`
+Output: `dist/Bantuity-Setup-<version>.exe`  
+Display name in Windows: **Bantuity Studio Light** (Beta branding in shell UI).
 
-## Architecture
+### Layout
 
 ```
-Electron shell
+bantuity-desktop/
   ├─ Plotex UI (local static)
   ├─ Copilot UI (local static)
   └─ Stata service → %LOCALAPPDATA%\Bantuity\StataConnector
 ```
 
-Settings: `%APPDATA%\bantuity-desktop\settings.json`
+## Branding
+
+| Field | Value |
+|--------|--------|
+| Full name | Bantuity Studio Light |
+| Known as | Studio Light |
+| Stage | Beta |
+| Modules | Plotex, Copilot |
+
+Technical IDs (`com.bantuity.desktop`, LocalAppData folders) stay stable so upgrades do not break existing installs.

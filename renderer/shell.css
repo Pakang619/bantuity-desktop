@@ -212,6 +212,31 @@ kbd {
   color: var(--accent);
 }
 
+.brand-product {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 0.2rem;
+  color: var(--ink);
+}
+
+.brand-beta {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 999px;
+  padding: 0.08rem 0.4rem;
+  line-height: 1.2;
+}
+
 .brand-sub {
   font-size: 0.72rem;
   color: var(--muted);

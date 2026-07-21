@@ -13,6 +13,12 @@ const { loadSettings, saveSettings, findConnectorInstall } = require('./config')
 const connector = require('./connector-manager')
 const { createStaticServer, appsRoot } = require('./static-server')
 
+/** Display branding — installer productName is "Bantuity Studio Light" */
+const APP_NAME = 'Bantuity Studio Light'
+const APP_SHORT = 'Studio Light'
+const APP_STAGE = 'Beta'
+const APP_TITLE = `${APP_SHORT} (${APP_STAGE})`
+
 let mainWindow = null
 let contentView = null
 let tray = null
@@ -281,7 +287,7 @@ function loadProduct(productId, opts = {}) {
   }
   const mode = localServers[productId] ? 'offline' : 'online'
   mainWindow?.setTitle(
-    `Bantuity — ${settings.products[productId]?.name || productId} · ${mode}`
+    `${APP_TITLE} — ${settings.products[productId]?.name || productId} · ${mode}`
   )
 }
 
@@ -302,7 +308,7 @@ function openDetachedWindow(productId) {
     minWidth: 640,
     minHeight: 480,
     backgroundColor: '#fbfffe',
-    title: `Bantuity — ${settings.products[productId]?.name || productId}`,
+    title: `${APP_TITLE} — ${settings.products[productId]?.name || productId}`,
     ...(icon ? { icon } : {}),
     webPreferences: {
       contextIsolation: true,
@@ -350,7 +356,7 @@ function createWindow() {
     minWidth: 720,
     minHeight: 520,
     backgroundColor: '#ecefee',
-    title: 'Bantuity',
+    title: `${APP_NAME} · ${APP_STAGE}`,
     ...(icon ? { icon } : {}),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -360,7 +366,7 @@ function createWindow() {
     },
     show: false,
   })
-  // Ensure Windows taskbar / title bar use the Bantuity mark (not Electron default)
+  // Ensure Windows taskbar / title bar use the product mark (not Electron default)
   if (icon) mainWindow.setIcon(icon)
 
   mainWindow.loadFile(path.join(__dirname, '..', 'renderer', 'shell.html'))
@@ -387,8 +393,24 @@ function createWindow() {
 
   const template = [
     {
-      label: 'Bantuity',
+      label: APP_SHORT,
       submenu: [
+        {
+          label: 'About Studio Light',
+          click: () => {
+            const { dialog } = require('electron')
+            dialog.showMessageBox(mainWindow, {
+              type: 'info',
+              title: `About ${APP_NAME}`,
+              message: `${APP_NAME}`,
+              detail:
+                `Also known as ${APP_SHORT}.\n` +
+                `Version: ${app.getVersion()} (${APP_STAGE})\n\n` +
+                'Includes Plotex (figures) and Copilot (analysis) with local Stata.',
+            })
+          },
+        },
+        { type: 'separator' },
         {
           label: 'Plotex',
           accelerator: 'CmdOrCtrl+1',
@@ -439,7 +461,7 @@ function createWindow() {
           },
         },
         { type: 'separator' },
-        { role: 'quit', label: 'Quit Bantuity' },
+        { role: 'quit', label: `Quit ${APP_SHORT}` },
       ],
     },
     {
@@ -514,10 +536,10 @@ function createTray() {
       img = img.resize({ width: 32, height: 32 })
     }
     tray = new Tray(img)
-    tray.setToolTip('Bantuity')
+    tray.setToolTip(`${APP_NAME} · ${APP_STAGE}`)
     tray.setContextMenu(
       Menu.buildFromTemplate([
-        { label: 'Show Bantuity', click: () => mainWindow?.show() },
+        { label: `Show ${APP_SHORT}`, click: () => mainWindow?.show() },
         {
           label: 'Plotex',
           click: () => {
@@ -619,7 +641,7 @@ ipcMain.handle('product:openPath', (_e, productId, pathAndQuery) => {
   mainWindow?.webContents.send('product:changed', id)
   const mode = localServers[id] ? 'offline' : 'online'
   mainWindow?.setTitle(
-    `Bantuity — ${settings.products[id]?.name || id} · ${mode}`
+    `${APP_TITLE} — ${settings.products[id]?.name || id} · ${mode}`
   )
   return { ok: true, url }
 })

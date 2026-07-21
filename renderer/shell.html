@@ -7,7 +7,7 @@
       content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Bantuity</title>
+    <title>Bantuity Studio Light · Beta</title>
     <link rel="stylesheet" href="shell.css" />
   </head>
   <body>
@@ -15,7 +15,12 @@
       <!-- Always-visible activity rail -->
       <nav class="activity" id="activity" aria-label="Activity">
         <button type="button" class="act-logo" id="btn-toggle-side" title="Toggle sidebar (Ctrl+B)">
-          <img src="../assets/bantuity_mark.png" width="28" height="28" alt="Bantuity" />
+          <img
+            src="../assets/bantuity_mark.png"
+            width="28"
+            height="28"
+            alt="Bantuity Studio Light"
+          />
         </button>
         <button
           type="button"
@@ -57,6 +62,10 @@
         <div class="side-head">
           <div class="brand">
             <div class="brand-mark"><span>BANTU</span><span class="accent">ITY</span></div>
+            <div class="brand-product">
+              Studio Light
+              <span class="brand-beta" title="Beta version">Beta</span>
+            </div>
             <div class="brand-sub" id="ui-mode">Desktop workspace</div>
           </div>
           <button type="button" class="icon-btn" id="btn-close-side" title="Close sidebar">
@@ -171,9 +180,9 @@
             <div>
               <div class="panel-title">Local Stata service</div>
               <p class="hint">
-                Runs on this computer under your licensed Stata (17 or later). Copilot, Plotex, and
-                optional MCP tools use this service so analysis data stays on your PC. Start the
-                service before running jobs.
+                Runs on this computer under your licensed Stata (17 or later). Studio Light (Copilot,
+                Plotex, and optional MCP tools) uses this service so analysis data stays on your PC.
+                Start the service before running jobs.
               </p>
             </div>
             <div class="stata-meta" id="stata-meta">

@@ -3,3 +3,4 @@ dist/
 apps/
 *.log
 .DS_Store
+# Keep resources/connector (bundled Stata service sources)

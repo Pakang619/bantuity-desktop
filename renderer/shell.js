@@ -152,7 +152,7 @@ function renderConnector(conn) {
     text = 'Stata service running'
     detail =
       conn.message ||
-      'Ready. Copilot, Plotex, and MCP jobs run on your licensed local Stata.'
+      'Ready. Studio Light (Copilot, Plotex, MCP) uses your licensed local Stata.'
     if (conn.lastLog) detail += ` · ${String(conn.lastLog).slice(0, 100)}`
   } else if (conn?.message) {
     detail = conn.message

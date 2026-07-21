@@ -1,7 +1,7 @@
 {
   "name": "bantuity-desktop",
-  "version": "1.3.0",
-  "description": "Bantuity desktop — Plotex, Copilot, and local Stata in one app",
+  "version": "1.4.0",
+  "description": "Bantuity Studio Light (Studio Light) Beta — Plotex, Copilot, and local Stata in one desktop app",
   "main": "electron/main.js",
   "author": "Bantuity",
   "license": "UNLICENSED",
@@ -18,8 +18,8 @@
   },
   "build": {
     "appId": "com.bantuity.desktop",
-    "productName": "Bantuity",
-    "executableName": "Bantuity",
+    "productName": "Bantuity Studio Light",
+    "executableName": "BantuityStudioLight",
     "directories": {
       "output": "dist",
       "buildResources": "assets"
@@ -69,7 +69,7 @@
       "allowToChangeInstallationDirectory": false,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Bantuity",
+      "shortcutName": "Bantuity Studio Light",
       "installerIcon": "icon.ico",
       "uninstallerIcon": "icon.ico",
       "installerHeaderIcon": "icon.ico"
