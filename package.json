@@ -1,6 +1,6 @@
 {
   "name": "bantuity-desktop",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Bantuity desktop — Plotex, Copilot, and local Stata in one app",
   "main": "electron/main.js",
   "author": "Bantuity",
@@ -9,18 +9,23 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
+    "icons": "node ./scripts/generate-icons.mjs",
     "bundle:web": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/bundle-web.ps1",
-    "pack": "electron-builder --dir",
-    "dist": "npm run bundle:web && electron-builder --win nsis",
-    "dist:portable": "npm run bundle:web && electron-builder --win portable",
-    "dist:quick": "electron-builder --win nsis"
+    "pack": "npm run icons && electron-builder --dir",
+    "dist": "npm run icons && npm run bundle:web && electron-builder --win nsis",
+    "dist:portable": "npm run icons && npm run bundle:web && electron-builder --win portable",
+    "dist:quick": "npm run icons && electron-builder --win nsis"
   },
   "build": {
     "appId": "com.bantuity.desktop",
     "productName": "Bantuity",
+    "executableName": "Bantuity",
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "assets"
     },
+    "icon": "icon.ico",
+    "afterPack": "./scripts/afterPack.cjs",
     "files": [
       "electron/**/*",
       "renderer/**/*",
@@ -34,16 +39,18 @@
         "filter": [
           "**/*"
         ]
+      },
+      {
+        "from": "resources/connector",
+        "to": "connector",
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "win": {
+      "icon": "icon.ico",
       "target": [
-        {
-          "target": "portable",
-          "arch": [
-            "x64"
-          ]
-        },
         {
           "target": "nsis",
           "arch": [
@@ -52,7 +59,8 @@
         }
       ],
       "artifactName": "Bantuity-Setup-${version}.${ext}",
-      "signAndEditExecutable": false
+      "signAndEditExecutable": false,
+      "verifyUpdateCodeSignature": false
     },
     "forceCodeSigning": false,
     "nsis": {
@@ -61,12 +69,18 @@
       "allowToChangeInstallationDirectory": false,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Bantuity"
+      "shortcutName": "Bantuity",
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico",
+      "installerHeaderIcon": "icon.ico"
     }
   },
-  "dependencies": {},
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "electron": "^33.2.0",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "^25.1.8",
+    "png-to-ico": "^3.0.2",
+    "rcedit": "^5.0.2",
+    "sharp": "^0.35.3"
   }
 }
