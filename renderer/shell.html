@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bantuity</title>
+    <link rel="stylesheet" href="shell.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <header class="brand">
+        <div class="brand-mark"><span>BANTU</span><span class="accent">ITY</span></div>
+        <div class="brand-sub">Desktop</div>
+      </header>
+
+      <p class="hint">Choose a product. Your work opens here — no browser needed.</p>
+      <p class="hint" id="ui-mode" style="margin-top:-0.35rem;font-size:0.75rem;"></p>
+
+      <nav class="products" aria-label="Products">
+        <button type="button" class="product" data-product="plotex" id="btn-plotex">
+          <strong>Plotex</strong>
+          <span>Journal-ready figures</span>
+        </button>
+        <button type="button" class="product" data-product="copilot" id="btn-copilot">
+          <strong>Copilot</strong>
+          <span>Stata analysis with AI</span>
+        </button>
+      </nav>
+
+      <div class="actions">
+        <button type="button" class="btn" id="btn-workspace">Open workspace</button>
+        <button type="button" class="btn ghost" id="btn-home">Product home</button>
+      </div>
+
+      <section class="stata-card">
+        <div class="label">Local Stata</div>
+        <div class="status-row">
+          <span class="dot" id="conn-dot"></span>
+          <span id="conn-text">Checking…</span>
+        </div>
+        <p class="status-detail" id="conn-detail">
+          Runs analysis on your licensed Stata on this PC.
+        </p>
+        <div class="actions tight">
+          <button type="button" class="btn primary" id="btn-conn-start">Start connector</button>
+          <button type="button" class="btn ghost" id="btn-conn-stop">Stop</button>
+        </div>
+      </section>
+
+      <footer class="foot">
+        <button type="button" class="linkish" id="btn-download">Get Stata connector</button>
+        <span class="muted">APIs stay in the cloud · Stata stays local</span>
+      </footer>
+    </aside>
+    <script src="shell.js"></script>
+  </body>
+</html>

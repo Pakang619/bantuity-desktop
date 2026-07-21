@@ -1,0 +1,72 @@
+{
+  "name": "bantuity-desktop",
+  "version": "1.0.0",
+  "description": "Bantuity desktop — Plotex, Copilot, and local Stata in one app",
+  "main": "electron/main.js",
+  "author": "Bantuity",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "bundle:web": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/bundle-web.ps1",
+    "pack": "electron-builder --dir",
+    "dist": "npm run bundle:web && electron-builder --win nsis",
+    "dist:portable": "npm run bundle:web && electron-builder --win portable",
+    "dist:quick": "electron-builder --win nsis"
+  },
+  "build": {
+    "appId": "com.bantuity.desktop",
+    "productName": "Bantuity",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "renderer/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "apps",
+        "to": "apps",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Bantuity-Setup-${version}.${ext}",
+      "signAndEditExecutable": false
+    },
+    "forceCodeSigning": false,
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Bantuity"
+    }
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  }
+}
