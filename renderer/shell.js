@@ -6,7 +6,7 @@ const BOTTOM_MIN = 100
 const BOTTOM_MAX = 360
 const ACTIVITY = 52
 
-let current = 'plotex'
+let current = 'copilot'
 let layout = {
   sidebarOpen: true,
   sidebarWidth: 280,
@@ -14,7 +14,7 @@ let layout = {
   bottomHeight: 168,
   activityBar: true,
 }
-let tabs = ['plotex']
+let tabs = ['copilot']
 let offline = {}
 
 const appEl = document.getElementById('app')
@@ -171,7 +171,7 @@ async function refresh() {
   const data = await bantuity.getSettings()
   if (data.layout) layout = { ...layout, ...data.layout }
   applyLayoutCss()
-  current = data.currentProduct || data.settings?.lastProduct || 'plotex'
+  current = data.currentProduct || data.settings?.lastProduct || 'copilot'
   tabs = Array.isArray(data.settings?.openTabs) ? data.settings.openTabs : [current]
   if (!tabs.includes(current)) tabs.push(current)
   offline = data.offline || {}
@@ -490,11 +490,11 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.key === '1') {
     e.preventDefault()
-    openProduct('plotex')
+    openProduct('copilot')
   }
   if (e.key === '2') {
     e.preventDefault()
-    openProduct('copilot')
+    openProduct('plotex')
   }
 })
 

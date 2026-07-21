@@ -17,7 +17,7 @@ let mainWindow = null
 let contentView = null
 let tray = null
 let settings = null
-let currentProduct = 'plotex'
+let currentProduct = 'copilot'
 let localServers = { plotex: null, copilot: null }
 /** @type {Map<string, BrowserWindow>} */
 const detachedWindows = new Map()
@@ -369,7 +369,8 @@ function createWindow() {
     mainWindow.show()
     await startLocalApps()
     createContentView()
-    loadProduct(settings.lastProduct || 'plotex')
+    // Always open Copilot first — analysis is the primary entry point
+    loadProduct('copilot')
     try {
       await connector.startConnector()
       mainWindow.webContents.send('connector:changed', connector.getStatus())

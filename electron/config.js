@@ -21,9 +21,18 @@ const DEFAULTS = {
       apiUrl: 'https://stata-copilot-api.onrender.com',
     },
   },
-  lastProduct: 'plotex',
+  lastProduct: 'copilot',
   openWorkspaceOnLaunch: true,
-  connectorPath: '', // e.g. %LOCALAPPDATA%\\Bantuity\\PlotexConnector or StataConnector
+  connectorPath: '',
+  // Workspace chrome layout (persisted)
+  layout: {
+    sidebarOpen: true,
+    sidebarWidth: 280,
+    bottomOpen: true,
+    bottomHeight: 168,
+    activityBar: true,
+  },
+  openTabs: ['copilot'],
 }
 
 function configPath() {
@@ -42,6 +51,8 @@ function loadSettings() {
           plotex: { ...DEFAULTS.products.plotex, ...(raw.products?.plotex || {}) },
           copilot: { ...DEFAULTS.products.copilot, ...(raw.products?.copilot || {}) },
         },
+        layout: { ...DEFAULTS.layout, ...(raw.layout || {}) },
+        openTabs: Array.isArray(raw.openTabs) ? raw.openTabs : DEFAULTS.openTabs,
       }
     }
   } catch {
