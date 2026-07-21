@@ -142,17 +142,17 @@ function renderConnector(conn) {
   let cls = 'dot'
   let text = 'Stata service stopped'
   let detail =
-    'Click Start. Requires Stata 17+ on this PC (Python is set up automatically if needed).'
+    'Click Start. Requires licensed Stata 17 or later on this computer.'
   if (conn?.provisioning) {
     cls = 'dot busy'
-    text = 'Setting up…'
-    detail = conn.message || 'Preparing built-in Stata service (one-time).'
+    text = 'Starting…'
+    detail = conn.message || 'Starting the local Stata service…'
   } else if (conn?.running) {
     cls = 'dot on'
     text = 'Stata service running'
     detail =
       conn.message ||
-      'Ready for Plotex, Copilot, and MCP (Claude / Cursor / Codex / Grok). Jobs run on local Stata.'
+      'Ready. Copilot, Plotex, and MCP jobs run on your licensed local Stata.'
     if (conn.lastLog) detail += ` · ${String(conn.lastLog).slice(0, 100)}`
   } else if (conn?.message) {
     detail = conn.message
@@ -179,15 +179,15 @@ async function refresh() {
   renderConnector(data.connector)
   const modeEl = document.getElementById('ui-mode')
   if (modeEl) {
-    const both = offline.plotex && offline.copilot
-    modeEl.textContent = both ? 'Offline UI · cloud APIs' : 'Online UI mode'
+    modeEl.textContent = data.connector?.running
+      ? 'Stata connected'
+      : 'Desktop workspace'
   }
   const metaMode = document.getElementById('meta-mode')
   const metaUi = document.getElementById('meta-ui')
-  if (metaMode) metaMode.textContent = data.connector?.running ? 'connected' : 'idle'
+  if (metaMode) metaMode.textContent = data.connector?.running ? 'running' : 'idle'
   if (metaUi) {
-    metaUi.textContent =
-      offline.plotex || offline.copilot ? 'bundled offline' : 'online fallback'
+    metaUi.textContent = offline.plotex || offline.copilot ? 'local' : 'network'
   }
 }
 

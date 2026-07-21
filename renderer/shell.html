@@ -109,21 +109,18 @@
         </section>
 
         <section class="panel-block tips" id="mcp-help">
-          <div class="panel-title">MCP · coding tools</div>
+          <div class="panel-title">MCP integration</div>
           <p class="hint">
-            Use Copilot from <strong>Claude Code</strong>, <strong>Cursor</strong>,
-            <strong> Codex</strong>, <strong>Grok</strong>, and other MCP hosts. Same projects,
-            datasets, Stata runs, and auto-recovery — keep this Stata service <em>Start</em>ed for
-            live jobs.
+            Connect coding tools such as Claude Code, Cursor, Codex, or Grok to the same projects
+            and local Stata runs. Keep the Stata service running for live jobs.
           </p>
           <ol class="mcp-ol">
-            <li><code>cd stata-copilot\mcp</code></li>
-            <li><code>pip install -e .</code></li>
-            <li>Add <code>bantuity-mcp</code> to your host MCP config</li>
-            <li>Agent: <code>connector_status</code> → <code>chat</code> / <code>run_stata_code</code></li>
+            <li>Install the <code>bantuity-mcp</code> package</li>
+            <li>Register it in your tool’s MCP configuration</li>
+            <li>Start Stata here, then run analysis from the IDE</li>
           </ol>
           <button type="button" class="btn ghost" id="btn-mcp-docs">Open MCP guide</button>
-          <button type="button" class="btn ghost" id="btn-mcp-github">GitHub package</button>
+          <button type="button" class="btn ghost" id="btn-mcp-github">Documentation</button>
         </section>
       </aside>
 
@@ -174,9 +171,9 @@
             <div>
               <div class="panel-title">Local Stata service</div>
               <p class="hint">
-                Built into the desktop app. Jobs for Plotex, Copilot, and the <strong>MCP server</strong>
-                (Claude / Cursor / Codex / Grok) run on your licensed Stata 17+ — data stays on this PC.
-                Start this service before an IDE agent calls <code>run=true</code> tools.
+                Runs on this computer under your licensed Stata (17 or later). Copilot, Plotex, and
+                optional MCP tools use this service so analysis data stays on your PC. Start the
+                service before running jobs.
               </p>
             </div>
             <div class="stata-meta" id="stata-meta">

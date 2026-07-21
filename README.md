@@ -1,43 +1,38 @@
 # Bantuity Desktop
 
-One Windows app for **Plotex** and **Copilot** — no browser required for the UI.
+Windows application for **Copilot** (AI-assisted Stata analysis) and **Plotex** (publication figures). Stata runs on the user’s machine under their license.
 
-## Download (public)
+## Download
 
 **Installer:**  
 https://github.com/Pakang619/bantuity-desktop/releases/latest/download/Bantuity-Setup.exe
 
-**Release page:**  
+**Releases:**  
 https://github.com/Pakang619/bantuity-desktop/releases/latest
 
-Double-click the EXE (~71 MB). Windows SmartScreen may warn on unsigned builds → **More info → Run anyway**.
+## Requirements
 
-## What you get
+| Requirement | Detail |
+|-------------|--------|
+| Operating system | Windows 10 or 11, 64-bit |
+| Stata | Licensed Stata 17 or later installed on the same computer |
+| Network | Internet for AI generation, interpretation, and figure services |
+| Optional | Python 3.10+ if the environment is not already available (the app can set up a local service environment) |
 
-| Piece | Offline? | Notes |
-|--------|----------|--------|
-| Plotex UI | Yes | Bundled static Next.js export |
-| Copilot UI | Yes | Bundled static Next.js export (includes **MCP** how-to) |
-| Cloud APIs | No | Still calls Plotex / Copilot backends |
-| Local Stata service | Bundled in the app | Auto-starts; needs licensed Stata 17+ on the PC |
-| MCP for IDEs | External package | Claude Code, Cursor, Codex, Grok → same API + this Stata service |
+**Yes — the app is intended to run on any Windows PC that has a valid Stata license.** Analysis does not require a cloud Stata license; execution uses the user’s local Stata installation.
 
-### MCP (Claude Code, Cursor, Codex, Grok, …)
+## Features
 
-Coding tools can drive Copilot through the **Bantuity MCP** server while this app’s Stata service executes jobs:
-
-1. Keep **Start** (Stata service) running in Bantuity Desktop  
-2. Install MCP once: `cd stata-copilot\mcp` → `pip install -e .` → command `bantuity-mcp`  
-3. Wire your host (see sidebar **MCP · coding tools**, or https://copilot.bantuity.com/mcp )  
-
-Repo package: https://github.com/Pakang619/stata-copilot/tree/master/mcp
+- **Copilot** — natural language to do-files, local Stata runs, dashboard results and figures  
+- **Plotex** — journal themes, designer, and figure provenance  
+- **Local Stata service** — jobs stay on the PC under the user’s license  
+- **MCP** (optional) — IDE tools can use the same projects and Stata service  
 
 ## Develop
 
 ```powershell
-cd C:\Users\Deriv\Desktop\bantuity-desktop
+cd bantuity-desktop
 npm install
-# Bundle latest web UIs into apps/
 npm run bundle:web
 npm start
 ```
@@ -45,29 +40,18 @@ npm start
 ## Build installer
 
 ```powershell
-# Full: rebuild web + portable EXE
-npm run dist:portable
-
-# Or after bundle:web already ran:
-$env:CSC_IDENTITY_AUTO_DISCOVERY = "false"
-npx electron-builder --win portable --config.win.signAndEditExecutable=false
+npm run dist
 ```
 
-Output: `dist\Bantuity-Setup-1.0.0.exe`
-
-Publish a new GitHub release:
-
-```powershell
-gh release create v1.0.1 dist/Bantuity-Setup-1.0.0.exe --title "Bantuity Desktop 1.0.1" --notes "..."
-```
+Output: `dist/Bantuity-Setup-<version>.exe`
 
 ## Architecture
 
 ```
-Electron shell (sidebar)
-  ├─ local static server :39201 → apps/plotex
-  ├─ local static server :39202 → apps/copilot
-  └─ connector manager → %LOCALAPPDATA%\Bantuity\*Connector
+Electron shell
+  ├─ Plotex UI (local static)
+  ├─ Copilot UI (local static)
+  └─ Stata service → %LOCALAPPDATA%\Bantuity\StataConnector
 ```
 
 Settings: `%APPDATA%\bantuity-desktop\settings.json`
