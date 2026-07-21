@@ -5,7 +5,7 @@ One Windows app for **Plotex** and **Copilot** — no browser required for the U
 ## Download (public)
 
 **Installer:**  
-https://github.com/Pakang619/bantuity-desktop/releases/latest/download/Bantuity-Setup-1.0.0.exe
+https://github.com/Pakang619/bantuity-desktop/releases/latest/download/Bantuity-Setup.exe
 
 **Release page:**  
 https://github.com/Pakang619/bantuity-desktop/releases/latest
@@ -17,9 +17,20 @@ Double-click the EXE (~71 MB). Windows SmartScreen may warn on unsigned builds �
 | Piece | Offline? | Notes |
 |--------|----------|--------|
 | Plotex UI | Yes | Bundled static Next.js export |
-| Copilot UI | Yes | Bundled static Next.js export |
+| Copilot UI | Yes | Bundled static Next.js export (includes **MCP** how-to) |
 | Cloud APIs | No | Still calls Plotex / Copilot backends |
-| Local Stata | Local only | Use **Start connector** after installing the Stata connector once |
+| Local Stata service | Bundled in the app | Auto-starts; needs licensed Stata 17+ on the PC |
+| MCP for IDEs | External package | Claude Code, Cursor, Codex, Grok → same API + this Stata service |
+
+### MCP (Claude Code, Cursor, Codex, Grok, …)
+
+Coding tools can drive Copilot through the **Bantuity MCP** server while this app’s Stata service executes jobs:
+
+1. Keep **Start** (Stata service) running in Bantuity Desktop  
+2. Install MCP once: `cd stata-copilot\mcp` → `pip install -e .` → command `bantuity-mcp`  
+3. Wire your host (see sidebar **MCP · coding tools**, or https://copilot.bantuity.com/mcp )  
+
+Repo package: https://github.com/Pakang619/stata-copilot/tree/master/mcp
 
 ## Develop
 

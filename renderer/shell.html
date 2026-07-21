@@ -11,52 +11,206 @@
     <link rel="stylesheet" href="shell.css" />
   </head>
   <body>
-    <aside class="sidebar">
-      <header class="brand">
-        <div class="brand-mark"><span>BANTU</span><span class="accent">ITY</span></div>
-        <div class="brand-sub">Desktop</div>
-      </header>
-
-      <p class="hint">Choose a product. Your work opens here — no browser needed.</p>
-      <p class="hint" id="ui-mode" style="margin-top:-0.35rem;font-size:0.75rem;"></p>
-
-      <nav class="products" aria-label="Products">
-        <button type="button" class="product" data-product="plotex" id="btn-plotex">
-          <strong>Plotex</strong>
-          <span>Journal-ready figures</span>
+    <div class="app" id="app">
+      <!-- Always-visible activity rail -->
+      <nav class="activity" id="activity" aria-label="Activity">
+        <button type="button" class="act-logo" id="btn-toggle-side" title="Toggle sidebar (Ctrl+B)">
+          <img src="../assets/bantuity_mark.png" width="28" height="28" alt="Bantuity" />
         </button>
-        <button type="button" class="product" data-product="copilot" id="btn-copilot">
-          <strong>Copilot</strong>
-          <span>Stata analysis with AI</span>
+        <button
+          type="button"
+          class="act-btn"
+          data-product="plotex"
+          id="act-plotex"
+          title="Plotex (Ctrl+1)"
+        >
+          <span class="act-glyph">◆</span>
+          <span class="act-label">Plotex</span>
+        </button>
+        <button
+          type="button"
+          class="act-btn"
+          data-product="copilot"
+          id="act-copilot"
+          title="Copilot (Ctrl+2)"
+        >
+          <span class="act-glyph">✦</span>
+          <span class="act-label">Copilot</span>
+        </button>
+        <div class="act-spacer"></div>
+        <button type="button" class="act-btn" id="act-stata" title="Stata panel (Ctrl+J)">
+          <span class="act-glyph">◎</span>
+          <span class="act-label">Stata</span>
+        </button>
+        <button type="button" class="act-btn" id="act-detach" title="Open current product in new window">
+          <span class="act-glyph">⧉</span>
+          <span class="act-label">Float</span>
+        </button>
+        <button type="button" class="act-btn" id="act-updates" title="Desktop updates">
+          <span class="act-glyph">↑</span>
+          <span class="act-label">Update</span>
         </button>
       </nav>
 
-      <div class="actions">
-        <button type="button" class="btn" id="btn-workspace">Open workspace</button>
-        <button type="button" class="btn ghost" id="btn-home">Product home</button>
-      </div>
-
-      <section class="stata-card">
-        <div class="label">Local Stata</div>
-        <div class="status-row">
-          <span class="dot" id="conn-dot"></span>
-          <span id="conn-text">Checking…</span>
+      <!-- Collapsible + resizable side panel -->
+      <aside class="side" id="side" aria-label="Side panel">
+        <div class="side-head">
+          <div class="brand">
+            <div class="brand-mark"><span>BANTU</span><span class="accent">ITY</span></div>
+            <div class="brand-sub" id="ui-mode">Desktop workspace</div>
+          </div>
+          <button type="button" class="icon-btn" id="btn-close-side" title="Close sidebar">
+            ✕
+          </button>
         </div>
-        <p class="status-detail" id="conn-detail">
-          Runs analysis on your licensed Stata on this PC.
-        </p>
-        <div class="actions tight">
-          <button type="button" class="btn primary" id="btn-conn-start">Start connector</button>
-          <button type="button" class="btn ghost" id="btn-conn-stop">Stop</button>
-        </div>
-      </section>
 
-      <footer class="foot">
-        <button type="button" class="linkish" id="btn-download">Get Stata connector</button>
-        <button type="button" class="linkish" id="btn-desktop-update">Desktop app updates</button>
-        <span class="muted">UI offline · APIs in the cloud · Stata local</span>
+        <div class="tabs-row" id="tabs-row" aria-label="Open products">
+          <!-- filled by JS -->
+        </div>
+
+        <section class="panel-block">
+          <div class="panel-title">Products</div>
+          <div class="nav-item" data-product="plotex" id="btn-plotex" role="button" tabindex="0">
+            <span class="nav-ico">◆</span>
+            <span class="nav-text">
+              <strong>Plotex</strong>
+              <small>Figures · themes · designer</small>
+            </span>
+            <button type="button" class="nav-float" data-detach="plotex" title="Open in new window">
+              ⧉
+            </button>
+          </div>
+          <div class="nav-item" data-product="copilot" id="btn-copilot" role="button" tabindex="0">
+            <span class="nav-ico">✦</span>
+            <span class="nav-text">
+              <strong>Copilot</strong>
+              <small>Analysis · local Stata</small>
+            </span>
+            <button type="button" class="nav-float" data-detach="copilot" title="Open in new window">
+              ⧉
+            </button>
+          </div>
+        </section>
+
+        <section class="panel-block">
+          <div class="panel-title">Navigate</div>
+          <button type="button" class="btn" id="btn-workspace">Open workspace</button>
+          <button type="button" class="btn ghost" id="btn-home">Product home</button>
+          <button type="button" class="btn ghost" id="btn-reload">Reload view</button>
+        </section>
+
+        <section class="panel-block tips">
+          <div class="panel-title">Layout</div>
+          <p class="hint">
+            Drag the edges of this panel or the Stata bar to resize. Collapse with the activity
+            icons or <kbd>Ctrl</kbd>+<kbd>B</kbd> / <kbd>J</kbd>. Float a product with ⧉.
+          </p>
+          <button type="button" class="btn ghost" id="btn-reset-layout">Reset layout</button>
+        </section>
+
+        <section class="panel-block tips" id="mcp-help">
+          <div class="panel-title">MCP · coding tools</div>
+          <p class="hint">
+            Use Copilot from <strong>Claude Code</strong>, <strong>Cursor</strong>,
+            <strong> Codex</strong>, <strong>Grok</strong>, and other MCP hosts. Same projects,
+            datasets, Stata runs, and auto-recovery — keep this Stata service <em>Start</em>ed for
+            live jobs.
+          </p>
+          <ol class="mcp-ol">
+            <li><code>cd stata-copilot\mcp</code></li>
+            <li><code>pip install -e .</code></li>
+            <li>Add <code>bantuity-mcp</code> to your host MCP config</li>
+            <li>Agent: <code>connector_status</code> → <code>chat</code> / <code>run_stata_code</code></li>
+          </ol>
+          <button type="button" class="btn ghost" id="btn-mcp-docs">Open MCP guide</button>
+          <button type="button" class="btn ghost" id="btn-mcp-github">GitHub package</button>
+        </section>
+      </aside>
+
+      <!-- Vertical resize handle for side panel -->
+      <div
+        class="resize-v"
+        id="resize-side"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Resize sidebar"
+        title="Drag to resize"
+      ></div>
+
+      <!-- Content spacer (BrowserView draws on top) -->
+      <main class="content-slot" id="content-slot" aria-hidden="true"></main>
+
+      <!-- Horizontal resize for bottom panel -->
+      <div
+        class="resize-h"
+        id="resize-bottom"
+        role="separator"
+        aria-orientation="horizontal"
+        aria-label="Resize Stata panel"
+        title="Drag to resize"
+      ></div>
+
+      <!-- Bottom Stata dock (collapsible + resizable) -->
+      <footer class="bottom" id="bottom" aria-label="Stata service">
+        <div class="bottom-bar" id="bottom-drag">
+          <div class="bottom-left">
+            <button type="button" class="icon-btn" id="btn-toggle-bottom" title="Collapse panel">
+              ▾
+            </button>
+            <span class="dot" id="conn-dot"></span>
+            <strong id="conn-text">Stata</strong>
+            <span class="muted" id="conn-detail">Checking…</span>
+          </div>
+          <div class="bottom-actions">
+            <button type="button" class="btn sm primary" id="btn-conn-start">Start</button>
+            <button type="button" class="btn sm ghost" id="btn-conn-stop">Stop</button>
+            <button type="button" class="icon-btn" id="btn-pop-stata" title="Pop out Stata panel">
+              ⧉
+            </button>
+          </div>
+        </div>
+        <div class="bottom-body" id="bottom-body">
+          <div class="stata-grid">
+            <div>
+              <div class="panel-title">Local Stata service</div>
+              <p class="hint">
+                Built into the desktop app. Jobs for Plotex, Copilot, and the <strong>MCP server</strong>
+                (Claude / Cursor / Codex / Grok) run on your licensed Stata 17+ — data stays on this PC.
+                Start this service before an IDE agent calls <code>run=true</code> tools.
+              </p>
+            </div>
+            <div class="stata-meta" id="stata-meta">
+              <div><span>Mode</span><code id="meta-mode">—</code></div>
+              <div><span>UI</span><code id="meta-ui">—</code></div>
+            </div>
+          </div>
+        </div>
       </footer>
-    </aside>
+    </div>
+
+    <!-- Floating Stata window (in-shell, draggable) -->
+    <div class="float-win" id="float-stata" hidden>
+      <div class="float-title" id="float-stata-drag">
+        <span>Stata service</span>
+        <div class="float-actions">
+          <button type="button" class="icon-btn" id="float-stata-dock" title="Dock back">⬇</button>
+          <button type="button" class="icon-btn" id="float-stata-close" title="Close">✕</button>
+        </div>
+      </div>
+      <div class="float-body">
+        <div class="status-row">
+          <span class="dot" id="float-dot"></span>
+          <strong id="float-text">—</strong>
+        </div>
+        <p class="hint" id="float-detail"></p>
+        <div class="float-btns">
+          <button type="button" class="btn sm primary" id="float-start">Start</button>
+          <button type="button" class="btn sm ghost" id="float-stop">Stop</button>
+        </div>
+      </div>
+      <div class="float-resize" id="float-stata-resize"></div>
+    </div>
+
     <script src="shell.js"></script>
   </body>
 </html>
